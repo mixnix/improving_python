@@ -10,13 +10,13 @@ SYMBOL_CIRCLE = 'O'
 
 def make_board():
     return [
-        [' ', ' ', ' '],
-        [' ', ' ', ' '],
-        [' ', ' ', ' ']
+        ['1', '2', '3'],
+        ['4', '5', '6'],
+        ['7', '8', '9']
     ]
 
 
-def make_move(board, pos, symbol):
+def make_move_to_position(board, pos, symbol):
     row, col = pos
     board[row][col] = symbol
 
@@ -69,17 +69,14 @@ def make_move(game):
 
     pos = get_valid_position_from_user()
 
-def print_header():
-    print("  A B C")
+
 
 def print_row(i, row):
-    print(str(i)+ " ", end="")
     for element in row:
         print(element, end="")
     print()
 
 def print_board(board):
-    print_header()
     for i, row in enumerate(board):
         print_row(i, row)
 
