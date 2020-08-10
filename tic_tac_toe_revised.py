@@ -1,21 +1,5 @@
-# # I.
-
-# grupować względem konstrukcji
-
-# logika, modele, widoki, test
-
-
-# # II.
-
-# rejestracja={logika, modele, widoki, test},  koszyk={logika, modele, widoki, test}  ,  poczta={logika, modele, widoki, test}
-
-
-# obiekt:
-#
 import random
-import math
 
-# 1. globalne, które zmieniamy są problematyczne
 SYMBOL_CROSS = 'X'
 SYMBOL_CIRCLE = 'O'
 WINNING_POSITIONS = [[1, 2, 3],
@@ -26,6 +10,7 @@ WINNING_POSITIONS = [[1, 2, 3],
                      [3, 6, 9],
                      [1, 5, 9],
                      [3, 5, 7]]
+POTENTIAL_SYMBOLS = [SYMBOL_CIRCLE, SYMBOL_CROSS]
 
 
 # LOGIKA
@@ -49,40 +34,31 @@ def make_move_to_position(board, pos, symbol):
     board[row][col] = symbol
 
 
-def is_line(board, symbol):
-    pass
-
-
 # symbol gracza albo None
-
-def get_winner(board):
-    if is_line(board, SYMBOL_CROSS):
-        return SYMBOL_CROSS
-    elif is_line(board, SYMBOL_CIRCLE):
-        return SYMBOL_CIRCLE
-    else:
-        return None
 
 
 def make_history():
     return None
 
 
-def is_end(game):
-    pass
+def get_starting_player_symbol(potential_symbols):
+    return random.choice(potential_symbols)
 
 
-def toss_a_coin():
-    random_bit = random.getrandbits(1)
-    return bool(random_bit)
+def get_initial_next_symbols(current_symbol, potential_symbols):
+    copy = list(potential_symbols)
+    copy.remove(current_symbol)
+    return copy
 
 
 def make_game():
-    return {
+    initial_state = {
         'board': make_board(),
         'history': make_history(),
-        'is_current_player_cross': toss_a_coin()
+        'current_symbol': get_starting_player_symbol(POTENTIAL_SYMBOLS)
     }
+    initial_state['next_symbols'] = get_initial_next_symbols(initial_state['current_symbol'], POTENTIAL_SYMBOLS)
+    return initial_state
 
 
 # KONTAKT ZE ŚWIATEM
@@ -126,57 +102,19 @@ def get_valid_position_from_user(board):
             print("Position is not valid, try again.")
 
 
-# is_current_player_cross
-# Cross / Circle
-
-# game['current_player'] # Cross / Cricle
-
-
 def player_prompt(symbol):
-    # current_player = "Cross" if game['is_current_player_cross'] == True else 'Circle' # TODO
     return (
             "It's " + symbol + " turn.\n" +
             "Enter where you want to make a move: "
     )
 
 
-#     print("\nIt's " + current_player + " turn.")
-#     print("Enter where you want to make a move: ", end="")
-
-# input(player_prompt(game['curr_player']))
-
-
-def print_make_move_prompt(game):
-    current_player = "Cross" if game['is_current_player_cross'] == True else 'Circle'  # TODO
-    print("\nIt's " + current_player + " turn.")
-    print("Enter where you want to make a move: ", end="")
-
-
-def get_current_player_symbol(game):
-    if game['is_current_player_cross']:
-        return 'X'
-    else:
-        return 'O'
-
-
 def make_move(game):
-    print_make_move_prompt(game)
+    print(player_prompt(game['current_symbol']))
 
     pos = get_valid_position_from_user(game['board'])
-    make_move_to_position(game['board'], pos, get_current_player_symbol(game))
+    make_move_to_position(game['board'], pos, game['current_symbol'])
 
-
-# WEEK_DAYS = 7
-
-
-# f1  ------> G <-----> f2, f100, f101, f102
-
-# 1) czy game to dobra rzecz jako często pojawiający się argument
-
-# 2) czy game nie lepiej zrobić jako klasę?
-#
-
-# 3) game jako globalna?
 
 def print_row(i, row):
     for element in row:
@@ -209,33 +147,50 @@ def check_if_position_has_three_of_a_kind_symbols(position, board):
     return False
 
 
-def is_won(board):
+def end_game(game):
+    print_win_status(game)
+    exit()
+
+
+def print_win_status(game):
+    print("Player: " + game['current_symbol'] + " won!")
+
+
+def is_game_ended(game):
     for line_positions in WINNING_POSITIONS:
-        if is_line(board, line_positions):
+        if is_line(game, line_positions):
             return True
     return False
 
 
-def get_winning_player_name(game):
-    return get_current_player_symbol(game)
+def is_line(game, line):
+    for place in line:
+        row, col = convert_position_to_coordinates(place)
+        if game['board'][row][col] != game['current_symbol']:
+            return False
+        # board[]
+    return True
 
 
-def check_if_game_ended(game):
-    if is_won(game['board']):
-        print("Player: " + get_winning_player_name(game) + " won!")
-
+# def get_winner(board):
+#     if is_line(board, SYMBOL_CROSS):
+#         return SYMBOL_CROSS
+#     elif is_line(board, SYMBOL_CIRCLE):
+#         return SYMBOL_CIRCLE
+#     else:
+#         return None
 
 def change_players(game):
-    game['is_current_player_cross'] = not game['is_current_player_cross']
+    game['next_symbols'].append(game['current_symbol'])
+    game['current_symbol'] = game['next_symbols'].pop(0)
 
 
 def run_game(game):
     while True:
         print_game(game)  # pokazuje plansze, i komunikaty dla usera
         make_move(game)
-        check_if_game_ended(game)
-        # if is_game_ended(game):
-        # print_status(game)
+        if is_game_ended(game):
+            end_game(game)
         change_players(game)
 
 
