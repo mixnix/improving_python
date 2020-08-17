@@ -1,5 +1,28 @@
 import random
 
+# import copy
+
+# BOARD_WIDTH = 3
+# BOARD_HEIGHT = 3
+
+# def generate_row():
+#     return [' ' for x in range(BOARD_WIDTH)]
+
+# def generate_board():
+#     return [generate_row() for x in range(BOARD_HEIGHT)]
+
+
+# b1 = generate_board() # <-- lista list
+# # b2 = list(b1)  # nowę listę (ale tych samych list)
+
+# b2 = copy.deepcopy(b1)
+
+# b2[0][0] = 9
+# b2.append(100)
+
+# print(b1)
+
+
 SYMBOL_CROSS = 'X'
 SYMBOL_CIRCLE = 'O'
 WINNING_POSITIONS = [[1, 2, 3],

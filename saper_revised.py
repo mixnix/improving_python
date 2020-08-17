@@ -1,31 +1,11 @@
-# import copy
-
-# BOARD_WIDTH = 3
-# BOARD_HEIGHT = 3
-
-# def generate_row():
-#     return [' ' for x in range(BOARD_WIDTH)]
-
-# def generate_board():
-#     return [generate_row() for x in range(BOARD_HEIGHT)]
-
-
-# b1 = generate_board() # <-- lista list
-# # b2 = list(b1)  # nowę listę (ale tych samych list)
-
-# b2 = copy.deepcopy(b1)
-
-# b2[0][0] = 9
-# b2.append(100)
-
-# print(b1)
-
-
 import random
 
 BOARD_WIDTH = 10
 BOARD_HEIGHT = 8
 MINES = 10
+MINE_SYMBOL = 'O'
+EMPTY_FIELD_SYMBOL = 'E'
+# pierwsza wspolrzedna to y a druga to x
 
 '''
   1 2 3 4 5 6 7 8 9 10
@@ -47,11 +27,11 @@ h
 
 
 def generate_row():
-    return [' ' for x in range(BOARD_WIDTH)]
+    return [EMPTY_FIELD_SYMBOL for x in range(BOARD_WIDTH)]
 
 
 def generate_board():
-    return [generate_empty_row() for x in range(BOARD_HEIGHT)]
+    return [generate_row() for x in range(BOARD_HEIGHT)]
 
 
 def rand_positions(n):
@@ -71,30 +51,16 @@ def to_cords(positions):
     return cords
 
 
-# def convert_positions_to_cords(positions):
-#     cords = []
-#     for pos in positions:
-#         cords.append(make_cord(pos))
-#     return cords
 
-
-MINE_SYMBOL = 'O'
 
 
 def fill_board_with_mines(empty_board):
     ten_random_positions = rand_positions(10)
-    ten_random_cords = convert_positions_to_cords(ten_random_positions)
+    ten_random_cords = to_cords(ten_random_positions)
     for cord in ten_random_cords:
-        empty_board[cord['row']][cord['col']] = MINE_SYMBOL
+        empty_board[cord[0]][cord[1]] = MINE_SYMBOL
     return empty_board
 
-
-# def generate_board():
-#     return empty_board, board_with_mines
-
-
-# public_board
-# private_board
 
 def make_game():
     board = generate_board()
@@ -103,6 +69,19 @@ def make_game():
 
 
 # KONTAKT ZE ŚWIATEM
+
+def show_row(row):
+    for symbol in row:
+        print(symbol, end=' ')
+    print()
+
+def show_board(player_view):
+    print('   1 2 3 4 5 6 7 8 9 10')
+    column_letters = list('ABCDEFGHIJ')
+    for row in player_view:
+        print(column_letters.pop(0), end='  ')
+        show_row(row)
+
 
 def make_move(game):
     pass
@@ -113,6 +92,7 @@ def is_game_ended(game):
 
 
 def run_game(game):
+    show_board(game['player_view'])
     make_move(game)
     if is_game_ended(game):
         pass
